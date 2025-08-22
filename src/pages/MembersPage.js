@@ -79,6 +79,18 @@ function MembersPage() {
     setEditingMember(null);
     setModalOpen(false);
   };
+  const handleDeleteClick = async (memberId) => {
+  if (!window.confirm("Are you sure you want to delete this member?")) return;
+
+  try {
+    await api.delete(`/members/${memberId}/`);
+    // Refresh member list after deletion
+    const res = await api.get("/members/");
+    setMembers(res.data);
+  } catch (error) {
+    alert("Failed to delete member.");
+  }
+};
 
   return (
     <div>
@@ -201,6 +213,21 @@ function MembersPage() {
               }}
             >
               Update
+            </button>
+            <button
+             onClick={() => handleDeleteClick(member.id)}
+             style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "6px",
+              border: "none",
+              backgroundColor: "#f44336",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: "600",
+              flexGrow: 1,
+            }}
+            >
+             Delete
             </button>
           </div>
         ))}
