@@ -7,16 +7,17 @@ body {
   margin: 0;
 }
 
-/* Centrally aligned responsive container */
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2vw;
+/* Centrally aligned responsive container with max-width */
+.app-container,
+.admin-dashboard-container {
+  max-width: 1200px;  /* wider max layout for desktops */
+  margin: 0 auto;
+  padding: 2rem 3rem;
+  box-sizing: border-box;
+  width: 95%;
 }
 
+/* Glass card style (forms, cards, etc.) */
 .glass-card {
   background: rgba(255, 255, 255, 0.16);
   border-radius: 16px;
@@ -70,21 +71,14 @@ form.glass-card button:hover {
   background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
 }
 
-/* Responsive design */
-@media (max-width: 600px) {
-  .glass-card {
-    padding: 1rem;
-    max-width: 98vw;
-  }
-}
-
 /* Member cards grid */
 .member-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 2rem;
-  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  padding: 1rem 0;
 }
+
 
 .member-card {
   background: rgba(255,255,255,0.19);
@@ -99,17 +93,129 @@ form.glass-card button:hover {
   margin-bottom: 1.4rem;
   flex: 1 1 240px;
   font-family: inherit;
+  transition: transform 0.15s ease-in-out;
+}
+
+.member-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
 .member-card h3 {
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 95%;
+  padding: 1rem;
 
-/* Responsive for Member Cards */
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.status-active {
+  background-color: #4caf50; /* Green */
+}
+
+.status-vacation {
+  background-color: #ff9800; /* Orange */
+}
+
+.status-exited {
+  background-color: #f44336; /* Red */
+}
+
+@media (min-width: 900px) {
+  .form-container {
+    max-width: 800px; /* larger width on desktops */
+  }
+}
+/* Responsive for Member Cards and containers */
+@media (max-width: 600px) {
+  .glass-card {
+    padding: 1rem;
+    max-width: 98vw;
+  }
+
+  .app-container,
+  .admin-dashboard-container {
+    padding: 1rem;
+  }
+}
+@media (max-width: 900px) {
+  .admin-dashboard-container {
+    padding: 1rem 1.5rem;
+    max-width: 95vw;
+  }
+}
+
 @media (max-width: 450px) {
   .member-card {
     max-width: 95vw;
     padding: 1rem;
+  }
+}
+
+/* Navigation styles */
+nav {
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  height: 60px;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  box-sizing: border-box;
+}
+
+/* Logo container */
+nav > div.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Navigation links container */
+nav > div.links-container {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Nav links standard and active color */
+nav a {
+  color: #a0d8f7; /* lighter blue */
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+nav a.active,
+nav a:hover {
+  color: #0a74da; /* deeper blue for active/hover */
+}
+
+/* For smaller screens, stack nav */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem;
+  }
+
+  nav > div.links-container {
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
   }
 }

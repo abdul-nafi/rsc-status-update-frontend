@@ -1,42 +1,57 @@
 import React, { useState } from "react";
-import MemberList from "../components/MemberList";
+import { Routes, Route, Navigate } from "react-router-dom";
+import AppBar from "../components/AppBar";
 import MemberForm from "../components/MemberForm";
+import MembersPage from "./MembersPage"; // import the members listing page
 
 function AdminDashboard({ onLogout }) {
   const [editingMember, setEditingMember] = useState(null);
-  const [refreshFlag, setRefreshFlag] = useState(false);
 
-  const handleEdit = (member) => setEditingMember(member);
-  const handleFormSaved = () => {
-    setEditingMember(null);
-    setRefreshFlag((prev) => !prev);
-  };
-
-  // Logout handler
   const handleLogout = () => {
     localStorage.removeItem("token");
-    onLogout(); // Will update App state
+    onLogout();
   };
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Admin Dashboard</h1>
-        <button onClick={handleLogout} style={{
-          padding: '.6rem 1.2rem',
-          borderRadius: '8px',
-          background: 'linear-gradient(90deg, #43cea2 0%, #185a9d 100%)',
-          color: 'white',
-          border: 'none',
-          fontWeight: 600,
-          cursor: 'pointer'
-        }}>
+    <>
+      <AppBar />
+      <div className="admin-dashboard-container">
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: ".6rem 1.2rem",
+            borderRadius: "8px",
+            background: "linear-gradient(90deg, #43cea2 0%, #185a9d 100%)",
+            color: "white",
+            border: "none",
+            fontWeight: 600,
+            cursor: "pointer",
+            marginBottom: "1rem",
+          }}
+        >
           Logout
         </button>
+
+        <Routes>
+          <Route path="/" element={<Navigate to="/add-member" />} />
+          <Route
+            path="/add-member"
+            element={
+              <div className="form-container">
+                <MemberForm
+                  memberToEdit={editingMember}
+                  onSaved={() => setEditingMember(null)}
+                />
+              </div>
+            }
+          />
+          <Route
+            path="/members"
+            element={<MembersPage onEdit={setEditingMember} />}
+          />
+        </Routes>
       </div>
-      <MemberForm memberToEdit={editingMember} onSaved={handleFormSaved} />
-      <MemberList key={refreshFlag} onEdit={handleEdit} />
-    </div>
+    </>
   );
 }
 
