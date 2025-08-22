@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from "react";
+import Login from "./components/Login";
+import AdminDashboard from "./pages/AdminDashboard";
 import './App.css';
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLoggedIn(true); // User is logged in if token exists
+    }
+  }, []);
+  
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      {loggedIn ? (
+        <AdminDashboard onLogout={handleLogout}/>
+      ) : (
+        <Login onLoginSuccess={() => setLoggedIn(true)} />
+        
+      )}
     </div>
   );
 }
