@@ -10,9 +10,11 @@ function Login({ onLoginSuccess }) {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await api.post("/api-token-auth/", form);
+      const res = await api.post("/token/", form);  // Updated URL
 
-      localStorage.setItem("token", res.data.token);
+      // Save JWT tokens
+      localStorage.setItem("access_token", res.data.access);
+      localStorage.setItem("refresh_token", res.data.refresh);
       setError("");
       onLoginSuccess(); // Notify parent of login success
     } catch {
