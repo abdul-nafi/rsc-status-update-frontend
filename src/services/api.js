@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Base Axios instance
 const api = axios.create({
-  baseURL:process.env.REACT_APP_API_URL,// Change to your Django backend URL
+  baseURL:"https://rsc-status-update-backend-production.up.railway.app/",// Change to your Django backend URL
 });
 
 // Later for auth: api.defaults.withCredentials = true;
