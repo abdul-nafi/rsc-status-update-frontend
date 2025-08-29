@@ -5,16 +5,15 @@ function Login({ onLoginSuccess }) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
 
-  const handleChange = e => setForm({...form, [e.target.name]: e.target.value });
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await api.post("/token/", form);  // Updated URL
+      const res = await api.post("/api-token-auth/", form);
 
-      // Save JWT tokens
-      localStorage.setItem("access_token", res.data.access);
-      localStorage.setItem("refresh_token", res.data.refresh);
+      // Save the token string under "token"
+      localStorage.setItem("token", res.data.token);
       setError("");
       onLoginSuccess(); // Notify parent of login success
     } catch {
@@ -28,7 +27,7 @@ function Login({ onLoginSuccess }) {
       <input name="username" placeholder="Username" value={form.username} onChange={handleChange} required />
       <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
       <button type="submit">Login</button>
-      {error && <p style={{color:"red"}}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   );
 }
