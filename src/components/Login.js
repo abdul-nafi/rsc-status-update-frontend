@@ -10,13 +10,17 @@ function Login({ onLoginSuccess }) {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await api.post("/api-token-auth/", form);
+      // POST login request to Django token auth endpoint
+      const res = await api.post("api-token-auth/", form);
 
-      // Save the token string under "token"
+      // Save token securely in localStorage
       localStorage.setItem("token", res.data.token);
+
       setError("");
-      onLoginSuccess(); // Notify parent of login success
-    } catch {
+      onLoginSuccess();  // Notify parent component about successful login
+
+    } catch (err) {
+      // Show error on invalid credentials or network problem
       setError("Invalid username or password");
     }
   };
@@ -24,8 +28,23 @@ function Login({ onLoginSuccess }) {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Login</h2>
-      <input name="username" placeholder="Username" value={form.username} onChange={handleChange} required />
-      <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
+      <input
+        name="username"
+        placeholder="Username"
+        value={form.username}
+        onChange={handleChange}
+        required
+        autoComplete="username"
+      />
+      <input
+        name="password"
+        type="password"
+        placeholder="Password"
+        value={form.password}
+        onChange={handleChange}
+        required
+        autoComplete="current-password"
+      />
       <button type="submit">Login</button>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
