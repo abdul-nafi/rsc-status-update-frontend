@@ -24,7 +24,7 @@ function Auth({ onLoginSuccess }) {
         onLoginSuccess && onLoginSuccess();
       } else {
         // Signup mode: create user, then auto login
-        await api.post("signup/", form); 
+        await api.post("api/signup/", form); 
         const loginRes = await api.post("api-token-auth/", {
           username: form.username,
           password: form.password,
