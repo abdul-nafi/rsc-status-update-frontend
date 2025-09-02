@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Login from "./components/Login";
+import Auth from "./components/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import './App.css';
 
@@ -8,11 +8,9 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setLoggedIn(true); // User is logged in if token exists
-    }
+    if (token) setLoggedIn(true);
   }, []);
-  
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setLoggedIn(false);
@@ -21,10 +19,9 @@ function App() {
   return (
     <div className="app-container">
       {loggedIn ? (
-        <AdminDashboard onLogout={handleLogout}/>
+        <AdminDashboard onLogout={handleLogout} />
       ) : (
-        <Login onLoginSuccess={() => setLoggedIn(true)} />
-        
+        <Auth onLoginSuccess={() => setLoggedIn(true)} />
       )}
     </div>
   );
