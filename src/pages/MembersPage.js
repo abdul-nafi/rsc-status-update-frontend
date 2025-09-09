@@ -14,7 +14,7 @@ function MembersPage() {
 
   useEffect(() => {
     api
-      .get("/members/")
+      .get("/api/members/")
       .then((res) => setMembers(res.data))
       .catch(() => setMembers([]));
   }, []);
@@ -72,7 +72,7 @@ function MembersPage() {
   const handleFormSaved = () => {
     setEditingMember(null);
     setModalOpen(false);
-    api.get("/members/").then((res) => setMembers(res.data));
+    api.get("/api/members/").then((res) => setMembers(res.data));
   };
 
   const handleCloseModal = () => {
@@ -83,9 +83,9 @@ function MembersPage() {
   if (!window.confirm("Are you sure you want to delete this member?")) return;
 
   try {
-    await api.delete(`/members/${memberId}/`);
+    await api.delete(`/api/members/${memberId}/`);
     // Refresh member list after deletion
-    const res = await api.get("/members/");
+    const res = await api.get("/api/members/");
     setMembers(res.data);
   } catch (error) {
     alert("Failed to delete member.");
