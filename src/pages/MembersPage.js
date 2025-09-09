@@ -8,10 +8,13 @@ function MembersPage() {
   const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all"); // all, active, vacation, exited
+  const [unitFilter, setUnitFilter] = useState(""); // New: unit filter state
+  const [units, setUnits] = useState([]); // New: list of units for dropdown
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [editingMember, setEditingMember] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Fetch members
   useEffect(() => {
     api
       .get("/api/members/")
@@ -19,6 +22,15 @@ function MembersPage() {
       .catch(() => setMembers([]));
   }, []);
 
+  // Fetch unit names for filter dropdown
+  useEffect(() => {
+    api
+      .get("/api/unit-names/")
+      .then((res) => setUnits(res.data))
+      .catch(() => setUnits([]));
+  }, []);
+
+  // Filter members based on search, status, and unit
   useEffect(() => {
     let filtered = [...members];
     const search = searchTerm.trim().toLowerCase();
@@ -42,8 +54,12 @@ function MembersPage() {
       filtered = filtered.filter((m) => m.is_exited_country);
     }
 
+    if (unitFilter) {
+      filtered = filtered.filter((m) => m.unit === unitFilter);
+    }
+
     setFilteredMembers(filtered);
-  }, [members, searchTerm, statusFilter]);
+  }, [members, searchTerm, statusFilter, unitFilter]);
 
   const exportToPDF = () => {
     const doc = new jsPDF();
@@ -79,18 +95,18 @@ function MembersPage() {
     setEditingMember(null);
     setModalOpen(false);
   };
-  const handleDeleteClick = async (memberId) => {
-  if (!window.confirm("Are you sure you want to delete this member?")) return;
 
-  try {
-    await api.delete(`/api/members/${memberId}/`);
-    // Refresh member list after deletion
-    const res = await api.get("/api/members/");
-    setMembers(res.data);
-  } catch (error) {
-    alert("Failed to delete member.");
-  }
-};
+  const handleDeleteClick = async (memberId) => {
+    if (!window.confirm("Are you sure you want to delete this member?")) return;
+
+    try {
+      await api.delete(`/api/members/${memberId}/`);
+      const res = await api.get("/api/members/");
+      setMembers(res.data);
+    } catch (error) {
+      alert("Failed to delete member.");
+    }
+  };
 
   return (
     <div>
@@ -101,7 +117,7 @@ function MembersPage() {
           display: "flex",
           gap: "1rem",
           flexWrap: "wrap",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <input
@@ -121,6 +137,20 @@ function MembersPage() {
           <option value="active">Active Members</option>
           <option value="vacation">Vacation Members</option>
           <option value="exited">Exited Members</option>
+        </select>
+
+        {/* New Unit Filter Dropdown */}
+        <select
+          value={unitFilter}
+          onChange={(e) => setUnitFilter(e.target.value)}
+          style={{ padding: "0.5rem", borderRadius: "6px" }}
+        >
+          <option value="">All Units</option>
+          {units.map((unit, i) => (
+            <option value={unit} key={i}>
+              {unit}
+            </option>
+          ))}
         </select>
 
         <button
@@ -157,9 +187,7 @@ function MembersPage() {
               justifyContent: "space-between",
             }}
           >
-            <div
-              style={{ flexGrow: 1 }}
-            >
+            <div style={{ flexGrow: 1 }}>
               <div
                 style={{
                   display: "flex",
@@ -186,12 +214,10 @@ function MembersPage() {
                 <strong>Contact:</strong> {member.contact_number}
               </p>
               <p>
-                <strong>On Vacation:</strong>{" "}
-                {member.is_on_vacation ? "Yes" : "No"}
+                <strong>On Vacation:</strong> {member.is_on_vacation ? "Yes" : "No"}
               </p>
               <p>
-                <strong>Exited Country:</strong>{" "}
-                {member.is_exited_country ? "Yes" : "No"}
+                <strong>Exited Country:</strong> {member.is_exited_country ? "Yes" : "No"}
               </p>
               <p>
                 <strong>Job Title:</strong> {member.job_title}
@@ -215,19 +241,19 @@ function MembersPage() {
               Update
             </button>
             <button
-             onClick={() => handleDeleteClick(member.id)}
-             style={{
-              padding: "0.5rem 1rem",
-              borderRadius: "6px",
-              border: "none",
-              backgroundColor: "#f44336",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: "600",
-              flexGrow: 1,
-            }}
+              onClick={() => handleDeleteClick(member.id)}
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "6px",
+                border: "none",
+                backgroundColor: "#f44336",
+                color: "white",
+                cursor: "pointer",
+                fontWeight: "600",
+                flexGrow: 1,
+              }}
             >
-             Delete
+              Delete
             </button>
           </div>
         ))}
