@@ -8,7 +8,7 @@ function MemberList({ onEdit }) {
 
   const fetchMembers = async () => {
     try {
-      const res = await api.get("/members/");
+      const res = await api.get("/api/members/");
       setMembers(res.data);
       setError("");
     } catch {

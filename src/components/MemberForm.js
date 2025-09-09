@@ -19,7 +19,7 @@ function MemberForm({ memberToEdit, onSaved }) {
 
   useEffect(() => {
     api
-      .get("/unit-names/")
+      .get("/api/unit-names/")
       .then((res) => setUnits(res.data))
       .catch(() => setUnits([]));
   }, []);
@@ -53,10 +53,10 @@ function MemberForm({ memberToEdit, onSaved }) {
     e.preventDefault();
     try {
       if (form.id) {
-        await api.put(`/members/${form.id}/`, form);
+        await api.put(`/api/members/${form.id}/`, form);
         setSuccessMsg("Member updated successfully!");
       } else {
-        await api.post("/members/", form);
+        await api.post("/api/members/", form);
         setSuccessMsg("Member added successfully!");
       }
 
